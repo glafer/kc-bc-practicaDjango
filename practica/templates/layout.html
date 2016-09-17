@@ -7,20 +7,20 @@
 </head>
 <body>
     <div class="container">
-        {% include "partial/base.html" %}
+        {% include "partials/_header.html" %}
 
         <hr>
 
         <div class="row">
             <div class="col-xs-12">
 
-                {% block body %} {% endblock %}
+                {% block body %} {% endblock body %}
 
             </div>
         </div>
 
         <hr>
-        &copy; Frikr, a tope!
+        &copy; DevBlogs, a tope!
     </div>
 </body>
 </html>

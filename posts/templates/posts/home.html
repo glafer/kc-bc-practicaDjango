@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <h1><a href="/">Bienvenido a DevBlogs</a></h1>
+    <br>
+    <h2>Últimos posts publicados</h2>
+
+    {% if posts_list|length > 0 %}
+        {% include "partials/_posts_loop.html"  with posts_list=posts_list %}
+    {% else %}
+        <p>No tenemos artículos. Se el primero en escribir uno!</p>
+    {% endif %}
+{% endblock body %}
