@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <h1><a href="/">Bienvenido a DevBlogs</a></h1>
+    <br>
+    <h2>Nuestros escritores</h2>
+
+    {% if blogs_list|length > 0 %}
+        {% include "partials/_blogs_loop.html"  with posts_list=users_list %}
+    {% else %}
+        <p>No tenemos usuarios. Se el primero en registrarte!</p>
+    {% endif %}
+{% endblock body %}

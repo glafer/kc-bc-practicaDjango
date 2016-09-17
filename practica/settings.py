@@ -39,8 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'practica',
     'posts',
-    'users',
+    'blogs',
     'categories',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [

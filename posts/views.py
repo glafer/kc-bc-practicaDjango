@@ -15,5 +15,5 @@ class HomeView(View):
         """
         # recupera todas las fotos de la base de datos
         posts = Post.objects.filter(publication_date__lt=datetime.now()).order_by('-created_at')
-        context = {'posts_list': posts[:3]}
+        context = {'posts_list': posts[:5]}
         return render(request, 'posts/home.html', context)
