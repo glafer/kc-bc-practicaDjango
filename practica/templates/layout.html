@@ -2,9 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>{% block title %} DevBlogs {% endblock %}</title>
+
 </head>
 <body>
+    <div class="container">
+        {% include "partial/base.html" %}
 
+        <hr>
+
+        <div class="row">
+            <div class="col-xs-12">
+
+                {% block body %} {% endblock %}
+
+            </div>
+        </div>
+
+        <hr>
+        &copy; Frikr, a tope!
+    </div>
 </body>
 </html>
