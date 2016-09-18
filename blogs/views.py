@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from blogs.forms import LoginForm
+from blogs.forms import LoginForm, UserCreateForm
 
 
 class ListView(View):
@@ -22,6 +22,38 @@ class ListView(View):
         context = {'blogs_list': blogs_list[:5]}
         return render(request, 'blogs/list.html', context)
 
+class SignUpView(View):
+
+    def get(self, request):
+        """
+        Presenta el formulario de signup y gestiona el signup de un usuario
+        :param request: objeto HttpRequest con los datos de la petición
+        :return: objeto HttpResponse con los datos de la respuesta
+        """
+        if not request.user.is_authenticated:
+            signup_form = UserCreateForm()
+            context = {'form': signup_form}
+            return render(request, 'blogs/signup.html', context)
+        else:
+            return redirect('posts_home')
+
+    def post(self, request):
+        """
+        Presenta el formulario de signup y gestiona el signup de un usuario
+        :param request: objeto HttpRequest con los datos de la petición
+        :return: objeto HttpResponse con los datos de la respuesta
+        """
+        user_form = UserCreateForm(request.POST)
+        if user_form.is_valid():
+            user_form.save()
+            username = request.POST.get('username')
+            password = request.POST.get('password1')
+            user = authenticate(username=username, password=password)
+            django_login(request, user)
+            return redirect('posts_home')
+
+        context = {'form': user_form}
+        return render(request, 'blogs/signup.html', context)
 
 class LoginView(View):
 
@@ -53,7 +85,7 @@ class LoginView(View):
             else:
                 if user.is_active:
                     django_login(request, user)
-                    return redirect(request.GET.get('next', 'photos_home'))
+                    return redirect(request.GET.get('next', 'posts_home'))
                 else:
                     error_message = "Cuenta de usuario inactiva"
         context = {'error': error_message, 'form': login_form}
