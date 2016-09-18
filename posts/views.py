@@ -1,3 +1,5 @@
+from django.contrib.auth.models import User
+from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from django.utils.datetime_safe import datetime
 from django.views import View
@@ -17,3 +19,6 @@ class HomeView(View):
         posts = Post.objects.filter(publication_date__lt=datetime.now()).order_by('-created_at')
         context = {'posts_list': posts[:5]}
         return render(request, 'posts/home.html', context)
+
+
+

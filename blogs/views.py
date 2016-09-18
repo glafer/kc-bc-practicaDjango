@@ -2,10 +2,12 @@ from django.contrib.auth import authenticate, login as django_login, logout as d
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
+from django.utils.datetime_safe import datetime
 from django.utils.decorators import method_decorator
 from django.views import View
 
 from blogs.forms import LoginForm, UserCreateForm
+from posts.models import Post
 
 
 class ListView(View):
@@ -103,3 +105,31 @@ class LogoutView(View):
         if request.user.is_authenticated():
             django_logout(request)
         return redirect('posts_home')
+
+
+class BlogQueryset(object):
+
+    @staticmethod
+    def get_posts_from_blog_by_user(user, loged_user):
+        possibles_posts = Post.objects.all().select_related("owner")
+        if loged_user.is_superuser or user == loged_user:
+            possibles_posts = possibles_posts.filter(owner=user).order_by('-created_at')
+        else:
+            possibles_posts = possibles_posts.filter(publication_date__lt=datetime.now()).order_by('-created_at')
+        return possibles_posts
+
+
+class BlogView(View):
+
+    def get(self, request, username):
+        """
+        Renderiza la página del blog del usuario pintando solo sus posts publicados
+        :param request: objeto HttpRequest con los datos de la petición
+        :return: objeto HttpResponse con los datos de la respuesta
+        """
+        blog_posts = BlogQueryset.get_posts_from_blog_by_user(User.objects.filter(username=username.replace('@', '')),
+                     request.user)
+
+        context = {'posts': blog_posts}
+
+        return render(request, 'blogs/userblog.html', context)
