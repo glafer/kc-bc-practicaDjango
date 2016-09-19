@@ -1,0 +1,21 @@
+{%  extends "layout.html" %}
+
+
+{% block title %}
+    Escribir post
+{% endblock %}
+
+{% block body %}
+
+    <h1>Crear post</h1>
+
+    {% if new_post_pk %}
+        <p>Foto creada satisfactoriamente <a href='{% url 'post_details' username=username pk=new_photo_pk %}'>Ver foto</a></p>
+    {% endif %}
+    {{ error }}
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Publicar post</button>
+    </form>
+{% endblock %}

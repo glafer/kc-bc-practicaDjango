@@ -1,0 +1,27 @@
+{%  extends "layout.html" %}
+
+
+{% block title %}
+    {{ post.title }}
+{% endblock %}
+
+{% block body %}
+
+
+    <h1>{{ post.title }}</h1>
+    <img src="{{ post.image_url }}" alt="{{ post.short_description }}" title="{{ post.title }}" width="600">
+    <h2>{{ post.owner.first_name }} {{ post.owner.last_name }}</h2>
+    <span>{{ post.publication_date }}</span>
+    <p>{{ post.short_description }}</p>
+    <p>{{ post.body }}</p>
+
+    {% if post.categories.all|length > 0 %}
+    <h5>Categories</h5>
+    <ul>
+        {% for category in post.categories.all %}
+        <li>{{ category.name }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+{% endblock %}
