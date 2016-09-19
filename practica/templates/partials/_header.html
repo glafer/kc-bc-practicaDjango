@@ -1,9 +1,16 @@
 <a href="{% url 'posts_home' %}">Home</a>
         |
         {% if user.is_authenticated %}
+        <a href="{% url 'blog_view' '@'|add:user.username %}">Mi blog</a>
+        |
+        <a href="{% url 'post_creation' %}">Escribir un post</a>
+        |
+        <a href="{% url 'blogs_list' %}">Lista de blogs</a>
+        |
+        <a href="{% url 'users_logout' %}">Logout</a>
 
-            <a href="{% url 'users_logout' %}">Logout</a>
         {% else %}
+
             <a href="{% url 'users_login' %}">Login</a>
             |
             <a href="{% url 'users_signup' %}">Sign Up</a>

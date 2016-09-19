@@ -1,9 +1,9 @@
 {% for user in blogs_list %}
 <div>
-
+            <a href="{% url 'blog_view' '@'|add:user.username %}">
             <h3>{{ user.first_name }} {{ user.last_name }}</h3>
             <p>{{ user.email }}</p>
-
+            </a>
 </div>
 
 {% endfor %}

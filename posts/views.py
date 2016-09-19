@@ -21,7 +21,7 @@ class HomeView(View):
         """
         # recupera todas las fotos de la base de datos
         posts = Post.objects.filter(publication_date__lt=datetime.now()).order_by('-created_at')
-        context = {'posts_list': posts[:5]}
+        context = {'posts_list': posts}
         return render(request, 'posts/home.html', context)
 
 
@@ -30,12 +30,11 @@ class PostView(View):
     @staticmethod
     def get_post_by_pk_owner(user, loged_user, pk):
         post = Post.objects.all().select_related("owner")
-        if loged_user.is_superuser or user == loged_user:
+        if loged_user.is_superuser or user[0] == loged_user:
             post = post.filter(owner=user, pk=pk)
         else:
             post = post.filter(publication_date__lt=datetime.now(), owner=user, pk=pk).order_by('-created_at')
         return post
-
 
     def get(self, request, username, pk):
         """

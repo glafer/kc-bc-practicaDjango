@@ -1,13 +1,13 @@
 {% extends "layout.html" %}
-
+{% block title %} Blog de {{ owner.username }} {% endblock %}
 {% block body %}
     <h1><a href="/">Bienvenido a DevBlogs</a></h1>
     <br>
-    <h2>Nuestros escritores</h2>
+    <h2>Posts de {{ owner.username}} </h2>
 
     {% if posts|length > 0 %}
         {% include "partials/_posts_loop.html"  with posts_list=posts %}
     {% else %}
-        <p>No tenemos usuarios. Se el primero en registrarte!</p>
+        <p>Este usuario aun no ha escrito ningún post</p>
     {% endif %}
 {% endblock body %}

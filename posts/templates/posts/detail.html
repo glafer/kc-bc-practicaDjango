@@ -16,7 +16,7 @@
     <p>{{ post.body }}</p>
 
     {% if post.categories.all|length > 0 %}
-    <h5>Categories</h5>
+    <h5>Categorias:</h5>
     <ul>
         {% for category in post.categories.all %}
         <li>{{ category.name }}</li>

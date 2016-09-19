@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login as django_login, logout as django_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.utils.datetime_safe import datetime
 from django.utils.decorators import method_decorator
@@ -110,12 +111,12 @@ class LogoutView(View):
 class BlogQueryset(object):
 
     @staticmethod
-    def get_posts_from_blog_by_user(user, loged_user):
+    def get_posts_from_blog_by_user(owner, loged_user):
         possibles_posts = Post.objects.all().select_related("owner")
-        if loged_user.is_superuser or user == loged_user:
-            possibles_posts = possibles_posts.filter(owner=user).order_by('-created_at')
+        if loged_user.is_superuser or owner[0] == loged_user:
+            possibles_posts = possibles_posts.filter(owner=owner).order_by('-created_at')
         else:
-            possibles_posts = possibles_posts.filter(publication_date__lt=datetime.now()).order_by('-created_at')
+            possibles_posts = possibles_posts.filter(publication_date__lt=datetime.now(), owner=owner).order_by('-created_at')
         return possibles_posts
 
 
@@ -127,9 +128,13 @@ class BlogView(View):
         :param request: objeto HttpRequest con los datos de la petición
         :return: objeto HttpResponse con los datos de la respuesta
         """
-        blog_posts = BlogQueryset.get_posts_from_blog_by_user(User.objects.filter(username=username.replace('@', '')),
-                     request.user)
+        owner = User.objects.filter(username=username.replace('@', ''))
 
-        context = {'posts': blog_posts}
+        if len(owner) == 0:
+            return HttpResponseNotFound("No hemos encontrado ese usuario")
+        blog_posts = BlogQueryset.get_posts_from_blog_by_user(owner, request.user)
+
+
+        context = {'posts': blog_posts, 'owner': owner[0] }
 
         return render(request, 'blogs/userblog.html', context)
