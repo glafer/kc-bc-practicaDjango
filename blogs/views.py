@@ -113,7 +113,7 @@ class BlogQueryset(object):
     @staticmethod
     def get_posts_from_blog_by_user(owner, loged_user):
         possibles_posts = Post.objects.all().select_related("owner")
-        if loged_user.is_superuser or owner[0] == loged_user:
+        if loged_user.is_staff or owner[0] == loged_user:
             possibles_posts = possibles_posts.filter(owner=owner).order_by('-created_at')
         else:
             possibles_posts = possibles_posts.filter(publication_date__lt=datetime.now(), owner=owner).order_by('-created_at')
