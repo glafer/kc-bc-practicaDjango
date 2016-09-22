@@ -11,13 +11,15 @@ class LoginForm(forms.Form):
 
 class UserCreateForm(UserCreationForm):
     username = forms.CharField(label="Nombre usuario", required=True)
+    first_name = forms.CharField(label="Nombre", required=True)
+    last_name = forms.CharField(label="Apellidos", required=True)
     email = forms.EmailField(required=True)
     password1 = forms.CharField(label="Constraseña", required=True, widget=forms.PasswordInput)
     password2 = forms.CharField(label="Confirma contraseña", required=True, widget=forms.PasswordInput)
 
     class Meta:
         model = User
-        fields = ("username", "email", "password1", "password2")
+        fields = ("username", "first_name", "last_name", "email", "password1", "password2")
 
     def save(self, commit=True):
         user = super(UserCreateForm, self).save(commit=False)
