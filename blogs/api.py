@@ -1,58 +1,27 @@
 from django.contrib.auth.models import User
-from rest_framework.generics import get_object_or_404
-
-from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_202_ACCEPTED, HTTP_204_NO_CONTENT
-from rest_framework.views import APIView
+from rest_framework import filters
+from rest_framework.viewsets import ModelViewSet
 
 from blogs.serializers import BlogSerializer, BlogListSerializer
-from practica.permissions import UserIsOwnerOrAdmin
+from practica.permissions import UserPermissionOnBlogs
 
 
-class BlogDetailAPI(APIView):
-    """
-    Endpoin detalle/creación/modificación usuarios/blogs
-    """
+class BlogViewSet(ModelViewSet):
 
-    permission_classes = (UserIsOwnerOrAdmin,)
+    serializer_class = User
+    permission_classes = [UserPermissionOnBlogs, ]
+    search_fields = ('first_name',)
+    order_fields = ('first_name',)
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
 
-    def get(self, request, pk):
-        blog = get_object_or_404(User, pk=pk)
-        self.check_object_permissions(request, blog)
-        serializer = BlogSerializer(blog)
-        return Response(serializer.data)
+    def get_queryset(self):
+        return User.objects.all()
 
-    def put(self, request, pk):
-        blog = get_object_or_404(User, pk=pk)
-        self.check_object_permissions(request, blog)
-        serializer = BlogSerializer(blog, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=HTTP_202_ACCEPTED)
-        else:
-            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+    def get_serializer_class(self):
+        return BlogSerializer if self.action != 'list' else BlogListSerializer
 
-    def delete(self, request, pk):
-         blog = get_object_or_404(User, pk=pk)
-         self.check_object_permissions(request, blog)
-         blog.delete()
-         return Response(status=HTTP_204_NO_CONTENT)
+    def perform_create(self, serializer):
+        return serializer.save()
 
-
-class BlogListAPI(APIView):
-    """
-    Endpoint de listado de usuarios
-    """
-
-    def get(self, request):
-        blogs = User.objects.all()
-        serializer = BlogListSerializer(blogs, many=True)
-        return Response(serializer.data)
-
-    def post(self, request):
-        serializer = BlogSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=HTTP_201_CREATED)
-        else:
-            return Response(serializer.data, status=HTTP_400_BAD_REQUEST)
+    def perform_update(self, serializer):
+        return serializer.save()
