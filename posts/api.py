@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.utils.datetime_safe import datetime
 from rest_framework import filters
 from rest_framework.viewsets import ModelViewSet
@@ -17,9 +18,13 @@ class PostViewSet(ModelViewSet):
 
     def get_queryset(self):
         posts = Post.objects.all().select_related("owner")
-        if posts[0].owner != self.request.user or not self.request.user.is_staff:
-            posts = posts.filter(publication_date__lt=datetime.now())
-        return posts
+        posts_filtered = []
+        for post in posts:
+            if post.owner != self.request.user or not self.request.user.is_staff:
+                posts_filtered.append(post)
+            elif post.publication_date < timezone.now():
+                posts_filtered.append(post)
+        return posts_filtered
 
     def get_serializer_class(self):
         return PostSerializer if self.action != 'list' else PostListSerializer

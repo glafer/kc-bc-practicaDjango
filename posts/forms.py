@@ -14,9 +14,10 @@ class PostForm(ModelForm):
     short_description = forms.CharField(label="Introducción", required=True)
     body = forms.CharField(label="Texto", widget=forms.Textarea, required=True)
     image_url = forms.URLField(label="Imagen del post", required=True)
-    publication_date = forms.DateTimeField(label="Fecha de publicación", required=True, widget=DateInput,input_formats=['%Y-%m-%d'])
-    categories = forms.MultipleChoiceField(label="Categorias", widget=forms.CheckboxSelectMultiple,
-                                           choices=[(obj.id, obj.name) for obj in Category.objects.all()], required=False)
+    publication_date = forms.DateTimeField(label="Fecha de publicación", required=True,
+                                           widget=DateInput, input_formats=['%Y-%m-%d'])
+    categories = forms.ModelMultipleChoiceField(queryset=Category.objects.all(), label="Categorias",
+                                                widget=forms.CheckboxSelectMultiple, required=False)
 
     class Meta:
         model = Post
