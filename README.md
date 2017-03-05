@@ -1,3 +1,3 @@
-[URL PRÁCTICA] (http://django.kc-bc-devops.com)
+[URL PRÁCTICA] (http://34.197.91.156)
 
-[ULR ESTÁTICO] (http://django.kc-bc-devops.com/static/rest_framework/js/csrf.js)
+[ULR ESTÁTICO] (http://34.197.91.156/static/rest_framework/js/csrf.js)
